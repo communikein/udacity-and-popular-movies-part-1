@@ -34,6 +34,7 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
+                    android:contentDescription="@string/label_movie_poster"
                     app:layout_collapseMode="parallax" />
 
                 <android.support.v7.widget.Toolbar
@@ -108,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    tools:text="007 - Casino Royale"
+                    tools:text="@string/placeholder_title"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="20sp"
                     app:layout_constraintTop_toBottomOf="@id/vote_average_icon"/>

@@ -15,8 +15,6 @@ import it.communikein.popularmovies.DatasetMovies;
 
 public class MoviesLoader extends AsyncTaskLoader<DatasetMovies> {
 
-    private static final String TAG = MoviesLoader.class.getSimpleName();
-
     // Weak references will still allow the Context to be garbage-collected
     private final WeakReference<Activity> mActivity;
     private final boolean mPopular;

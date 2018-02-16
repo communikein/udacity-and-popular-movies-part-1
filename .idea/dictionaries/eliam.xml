@@ -2,6 +2,8 @@
   <dictionary name="eliam">
     <words>
       <w>dataset</w>
+      <w>imageview</w>
+      <w>popularmovies</w>
     </words>
   </dictionary>
 </component>

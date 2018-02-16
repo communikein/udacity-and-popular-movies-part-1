@@ -9,15 +9,14 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class Movie implements Parcelable {
 
-    public static final SimpleDateFormat dateFormat =
+    private static final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-    public static final DecimalFormat voteFormat = new DecimalFormat("#.##");
+    private static final DecimalFormat voteFormat = new DecimalFormat("#.##");
 
     private int id;
     @SerializedName("vote_average")
@@ -30,7 +29,7 @@ public class Movie implements Parcelable {
     @SerializedName("release_date")
     private Date releaseDate;
 
-    public Movie(Parcel in) {
+    private Movie(Parcel in) {
         setId(in.readInt());
         setVoteAverage(in.readFloat());
         setPosterPath(in.readString());
@@ -53,23 +52,19 @@ public class Movie implements Parcelable {
         return originalTitle;
     }
 
-    public void setOriginalTitle(String originalTitle) {
+    private void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
 
-    public static SimpleDateFormat getDateFormat() {
-        return dateFormat;
-    }
-
-    public int getId() {
+    private int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
-    public float getVoteAverage() {
+    private float getVoteAverage() {
         return voteAverage;
     }
 
@@ -77,15 +72,15 @@ public class Movie implements Parcelable {
         return voteFormat.format(getVoteAverage());
     }
 
-    public void setVoteAverage(float voteAverage) {
+    private void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 
-    public String getPosterPath() {
+    private String getPosterPath() {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
+    private void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
@@ -93,7 +88,7 @@ public class Movie implements Parcelable {
         return overview;
     }
 
-    public void setOverview(String overview) {
+    private void setOverview(String overview) {
         this.overview = overview;
     }
 
@@ -101,7 +96,7 @@ public class Movie implements Parcelable {
         return "http://image.tmdb.org/t/p/w185" + posterPath;
     }
 
-    public Date getReleaseDate() {
+    private Date getReleaseDate() {
         return releaseDate;
     }
 
@@ -118,10 +113,6 @@ public class Movie implements Parcelable {
         } catch (ParseException e) {
             this.releaseDate = null;
         }
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
 

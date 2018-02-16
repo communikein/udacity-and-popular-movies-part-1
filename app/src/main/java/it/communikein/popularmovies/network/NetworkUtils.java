@@ -9,9 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class NetworkUtils {
-
-    private static final String TAG = NetworkUtils.class.getSimpleName();
+class NetworkUtils {
 
     private static final String API_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static final String API_KEY_PARAM = "?api_key=";
@@ -21,7 +19,7 @@ public class NetworkUtils {
     private static final String URL_TOP_RATED_MOVIE = API_BASE_URL + "/top_rated" + API_KEY_PARAM +
             ApiKeyUtils.API_KEY;
 
-    public static final String KEY_SERVER_RESPONSE = "SERVER_RESPONSE";
+    private static final String KEY_SERVER_RESPONSE = "SERVER_RESPONSE";
     public static final String KEY_DATA = "DATA";
 
     public static URL getMoviesUrl(boolean popular, int page) {

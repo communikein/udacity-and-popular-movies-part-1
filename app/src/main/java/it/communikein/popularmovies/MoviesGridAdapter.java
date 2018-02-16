@@ -91,7 +91,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ListItemMovieGridBinding mBinding;
+        private final ListItemMovieGridBinding mBinding;
 
         MovieViewHolder(ListItemMovieGridBinding binding) {
             super(binding.getRoot());
@@ -110,7 +110,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
                 mOnClickListener.onListNewsClick(clicked);
         }
 
-        public void bindData(Movie movie) {
+        void bindData(Movie movie) {
             mBinding.setMovie(movie);
 
             String averageVote = mBinding.getRoot().getContext()

@@ -17,19 +17,12 @@ public class DatasetMovies implements Parcelable {
     private int totalPages;
     private List<Movie> results;
 
-    public DatasetMovies(Parcel in) {
+    private DatasetMovies(Parcel in) {
         setPage(in.readInt());
         setTotalResults(in.readInt());
         setTotalPages(in.readInt());
         setResults(new ArrayList<>());
         in.readTypedList(results, Movie.CREATOR);
-    }
-
-    public DatasetMovies(int page, int totalResults, int totalPages, List<Movie> results) {
-        this.page = page;
-        this.totalResults = totalResults;
-        this.totalPages = totalPages;
-        this.results = results;
     }
 
     public int getPage() {
@@ -40,11 +33,11 @@ public class DatasetMovies implements Parcelable {
         this.page = page;
     }
 
-    public int getTotalResults() {
+    private int getTotalResults() {
         return totalResults;
     }
 
-    public void setTotalResults(int totalResults) {
+    private void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
     }
 
@@ -52,7 +45,7 @@ public class DatasetMovies implements Parcelable {
         return totalPages;
     }
 
-    public void setTotalPages(int totalPages) {
+    private void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
 
@@ -60,7 +53,7 @@ public class DatasetMovies implements Parcelable {
         return results;
     }
 
-    public void setResults(List<Movie> results) {
+    private void setResults(List<Movie> results) {
         this.results = results;
     }
 
