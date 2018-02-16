@@ -43,7 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="007 - Casino Royale"
+                tools:text="@string/placeholder_title"
                 android:textColor="@color/white"
                 android:textSize="18sp"/>
 
@@ -68,7 +68,7 @@
                 app:layout_constraintStart_toEndOf="@id/vote_average_icon"
                 app:layout_constraintTop_toTopOf="@id/vote_average_icon"
                 app:layout_constraintBottom_toBottomOf="@id/vote_average_icon"
-                tools:text="4.5"
+                tools:text="@string/placeholder_vote_average"
                 style="@style/TextAppearance.AppCompat.Caption"
                 android:textColor="@color/white"
                 android:textSize="12sp"

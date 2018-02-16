@@ -78,8 +78,10 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home)
-            NavUtils.navigateUpFromSameTask(this);
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

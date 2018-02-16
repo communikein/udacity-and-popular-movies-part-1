@@ -6,4 +6,7 @@
     <string name="label_movie_average_vote">Average vote</string>
 
     <string name="average_vote">%1$s/10</string>
+    <string name="placeholder_vote_average">4.5/10</string>
+    <string name="placeholder_title">007 - Casino Royale</string>
+    <string name="placeholder_date">4.01.2018</string>
 </resources>

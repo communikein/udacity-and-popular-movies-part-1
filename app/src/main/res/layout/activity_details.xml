@@ -88,7 +88,7 @@
                     app:layout_constraintStart_toEndOf="@id/vote_average_icon"
                     app:layout_constraintTop_toTopOf="@id/vote_average_icon"
                     app:layout_constraintBottom_toBottomOf="@id/vote_average_icon"
-                    tools:text="4.5/10"
+                    tools:text="@string/placeholder_vote_average"
                     style="@style/TextAppearance.AppCompat.Caption"
                     android:textColor="@color/white"
                     android:textSize="12sp"
@@ -98,8 +98,7 @@
                     android:id="@+id/release_date_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="4.01.2018"
-                    android:text="4.01.2018"
+                    tools:text="@string/placeholder_date"
                     app:layout_constraintTop_toTopOf="@id/vote_average_icon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/vote_average_icon"/>
