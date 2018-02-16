@@ -2,6 +2,7 @@ package it.communikein.popularmovies;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 
 import it.communikein.popularmovies.databinding.ActivityMainBinding;
 import it.communikein.popularmovies.network.MoviesLoader;
+import it.communikein.popularmovies.network.NetworkUtils;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -77,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(KEY_DATASET, datasetMovies);
+        if (datasetMovies != null)
+            outState.putParcelable(KEY_DATASET, datasetMovies);
         outState.putInt(KEY_FIRST_VISIBLE_ITEM_POS, firstVisibleItemPosition);
         outState.putBoolean(KEY_POPULAR, popular);
     }
@@ -153,20 +156,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void loadMoreMovies() {
-        if (datasetMovies != null && datasetMovies.getPage() < datasetMovies.getTotalPages()) {
-            int loader_id = popular ? LOADER_MORE_POPULAR_MOVIES_ID : LOADER_MORE_TOP_RATED_MOVIES_ID;
-
-            getSupportLoaderManager()
-                    .restartLoader(loader_id, null, this)
-                    .forceLoad();
-        }
+        if (datasetMovies != null && datasetMovies.getPage() < datasetMovies.getTotalPages())
+            loadData();
     }
 
     private void initData(Bundle savedInstanceState) {
         if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_DATASET))
-            getSupportLoaderManager()
-                    .restartLoader(LOADER_POPULAR_MOVIES_ID, null, this)
-                    .forceLoad();
+            loadData();
     }
 
     private void initFab() {
@@ -175,11 +171,26 @@ public class MainActivity extends AppCompatActivity implements
             popular = !popular;
             updateMovieSort();
 
-            int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_TOP_RATED_MOVIES_ID;
-            getSupportLoaderManager()
-                    .restartLoader(loader_id, null, this)
-                    .forceLoad();
+            loadData();
         });
+    }
+
+    private void loadData() {
+        final int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_TOP_RATED_MOVIES_ID;
+
+        if (NetworkUtils.isDeviceOnline(this)) {
+            getSupportLoaderManager()
+                    .restartLoader(loader_id, null, MainActivity.this)
+                    .forceLoad();
+        }
+        else {
+            Snackbar.make(mBinding.coordinatorView, R.string.error_no_internet,
+                    Snackbar.LENGTH_LONG).setAction(R.string.retry, v -> {
+                getSupportLoaderManager()
+                        .restartLoader(loader_id, null, MainActivity.this)
+                        .forceLoad();
+            });
+        }
     }
 
     private void updateMovieSort() {
