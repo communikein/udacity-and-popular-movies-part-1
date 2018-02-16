@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,7 +18,8 @@ import it.communikein.popularmovies.network.NetworkUtils;
 
 
 public class MainActivity extends AppCompatActivity implements
-        MoviesGridAdapter.MovieClickCallback, LoaderManager.LoaderCallbacks {
+        MoviesGridAdapter.MovieClickCallback, LoaderManager.LoaderCallbacks,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String KEY_DATASET = "DATASET";
     private static final String KEY_FIRST_VISIBLE_ITEM_POS = "FIRST_VISIBLE_ITEM_POS";
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity implements
 
         setSupportActionBar(mBinding.toolbar);
 
-        hideProgressBar();
+        /* Show data downloading */
+        mBinding.swipeRefresh.setOnRefreshListener(this);
+        mBinding.swipeRefresh.setRefreshing(false);
+
         initGrid();
         initData(savedInstanceState);
         initFab();
@@ -86,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showProgressBar() {
-        mBinding.progressBar.setVisibility(View.VISIBLE);
+        mBinding.swipeRefresh.setRefreshing(true);
     }
 
     private void hideProgressBar() {
-        mBinding.progressBar.setVisibility(View.GONE);
+        mBinding.swipeRefresh.setRefreshing(false);
     }
 
     private void initGrid() {
@@ -156,13 +161,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void loadMoreMovies() {
-        if (datasetMovies != null && datasetMovies.getPage() < datasetMovies.getTotalPages())
-            loadData();
+        if (datasetMovies != null && datasetMovies.getPage() < datasetMovies.getTotalPages()) {
+            final int loader_id = popular ? LOADER_MORE_POPULAR_MOVIES_ID : LOADER_MORE_TOP_RATED_MOVIES_ID;
+
+            loadData(loader_id);
+        }
     }
 
     private void initData(Bundle savedInstanceState) {
         if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_DATASET))
-            loadData();
+            onRefresh();
     }
 
     private void initFab() {
@@ -171,12 +179,20 @@ public class MainActivity extends AppCompatActivity implements
             popular = !popular;
             updateMovieSort();
 
-            loadData();
+            onRefresh();
         });
     }
 
-    private void loadData() {
-        final int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_TOP_RATED_MOVIES_ID;
+
+    @Override
+    public void onRefresh() {
+        int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_TOP_RATED_MOVIES_ID;
+
+        loadData(loader_id);
+    }
+
+    private void loadData(int loader_id) {
+        mBinding.swipeRefresh.setRefreshing(true);
 
         if (NetworkUtils.isDeviceOnline(this)) {
             getSupportLoaderManager()
@@ -189,7 +205,8 @@ public class MainActivity extends AppCompatActivity implements
                 getSupportLoaderManager()
                         .restartLoader(loader_id, null, MainActivity.this)
                         .forceLoad();
-            });
+            }).show();
+            mBinding.swipeRefresh.setRefreshing(false);
         }
     }
 
