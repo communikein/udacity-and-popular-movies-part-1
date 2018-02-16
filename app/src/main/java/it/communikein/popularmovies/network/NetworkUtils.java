@@ -1,8 +1,6 @@
 package it.communikein.popularmovies.network;
 
-import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
+import android.os.Bundle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,22 +21,16 @@ public class NetworkUtils {
     private static final String URL_TOP_RATED_MOVIE = API_BASE_URL + "/top_rated" + API_KEY_PARAM +
             ApiKeyUtils.API_KEY;
 
+    public static final String KEY_SERVER_RESPONSE = "SERVER_RESPONSE";
+    public static final String KEY_DATA = "DATA";
 
-    public static URL getTopRatedMoviesUrl() {
-        return buildUrl(false);
-    }
-
-    public static URL getPopularMoviesUrl() {
-        return buildUrl(true);
-    }
-
-    private static URL buildUrl(boolean popular) {
+    public static URL getMoviesUrl(boolean popular, int page) {
         try {
             URL url;
             if (popular)
-                url = new URL(URL_POPULAR_MOVIE);
+                url = new URL(URL_POPULAR_MOVIE + "&page=" + String.valueOf(page));
             else
-                url = new URL(URL_TOP_RATED_MOVIE);
+                url = new URL(URL_TOP_RATED_MOVIE + "&page=" + String.valueOf(page));
 
             return url;
         } catch (MalformedURLException e) {
@@ -48,23 +40,32 @@ public class NetworkUtils {
     }
 
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    public static Bundle getResponseFromHttpUrl(URL url) throws IOException {
+        Bundle data = new Bundle();
+
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+        int responseCode = urlConnection.getResponseCode();
+        if (responseCode == 200) {
+            try {
+                InputStream in = urlConnection.getInputStream();
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
+                Scanner scanner = new Scanner(in);
+                scanner.useDelimiter("\\A");
 
-            boolean hasInput = scanner.hasNext();
-            String response = null;
-            if (hasInput) {
-                response = scanner.next();
+                boolean hasInput = scanner.hasNext();
+                String response = null;
+                if (hasInput) {
+                    response = scanner.next();
+                }
+                scanner.close();
+
+                data.putString(KEY_DATA, response);
+            } finally {
+                urlConnection.disconnect();
             }
-            scanner.close();
-            return response;
-        } finally {
-            urlConnection.disconnect();
         }
+        data.putInt(KEY_SERVER_RESPONSE, responseCode);
+
+        return data;
     }
 }

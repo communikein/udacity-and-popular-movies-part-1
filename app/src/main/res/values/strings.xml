@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="title_popular_movies">Popular Movies</string>
+    <string name="title_top_rated_movies">Top Rated Movies</string>
+    <string name="label_movie_poster">Movie poster</string>
+    <string name="label_movie_average_vote">Average vote</string>
+
+    <string name="average_vote">%1$s/10</string>
 </resources>

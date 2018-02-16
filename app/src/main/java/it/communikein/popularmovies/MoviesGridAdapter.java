@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.communikein.popularmovies.databinding.ListItemMovieGridBinding;
 
@@ -52,7 +53,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
     }
 
 
-    public void setList(final ArrayList<Movie> newList) {
+    public void setList(final List<Movie> newList) {
         final ArrayList<Movie> tempList = new ArrayList<>(newList);
 
         if (mList == null) {
@@ -111,12 +112,15 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
 
         public void bindData(Movie movie) {
             mBinding.setMovie(movie);
-            mBinding.dateTextview.setText(movie.printReleaseDate());
+
+            String averageVote = mBinding.getRoot().getContext()
+                    .getString(R.string.average_vote, movie.printVoteAverage());
+            mBinding.voteAverageTextview.setText(averageVote);
             mBinding.titleTextview.setText(movie.getOriginalTitle());
 
-            if (movie.getPosterThumbPath() != null) {
+            if (movie.getPosterFullPath() != null) {
                 Picasso.with(mBinding.getRoot().getContext())
-                        .load(movie.getPosterThumbPath())
+                        .load(movie.getPosterFullPath())
                         .into(mBinding.moviePosterImageview);
             }
         }
