@@ -1,5 +1,6 @@
 package it.communikein.popularmovies;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -11,7 +12,6 @@ import android.view.View;
 
 import it.communikein.popularmovies.databinding.ActivityMainBinding;
 import it.communikein.popularmovies.network.MoviesLoader;
-import it.communikein.popularmovies.utilities.JsonParseUtils;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        initToolbar(R.string.title_popular_movies);
+        setSupportActionBar(mBinding.toolbar);
 
         hideProgressBar();
         initGrid();
@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         popular = savedInstanceState.getBoolean(KEY_POPULAR);
         updateMovies();
 
-        String json = savedInstanceState.getString(KEY_DATASET);
-        datasetMovies = JsonParseUtils.getMoviesDatasetFromJson(json);
+        datasetMovies = savedInstanceState.getParcelable(KEY_DATASET);
 
         if (savedInstanceState.containsKey(KEY_FIRST_VISIBLE_ITEM_POS))
             firstVisibleItemPosition = savedInstanceState.getInt(KEY_FIRST_VISIBLE_ITEM_POS);
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString(KEY_DATASET, JsonParseUtils.getJsonFromMoviesDataset(datasetMovies));
+        outState.putParcelable(KEY_DATASET, datasetMovies);
         outState.putInt(KEY_FIRST_VISIBLE_ITEM_POS, firstVisibleItemPosition);
         outState.putBoolean(KEY_POPULAR, popular);
     }
@@ -171,11 +170,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initFab() {
+        mBinding.fab.setBackgroundResource(R.drawable.ic_star_white);
         mBinding.fab.setOnClickListener(v -> {
             popular = !popular;
             updateMovieSort();
 
-            int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_POPULAR_MOVIES_ID;
+            int loader_id = popular ? LOADER_POPULAR_MOVIES_ID : LOADER_TOP_RATED_MOVIES_ID;
             getSupportLoaderManager()
                     .restartLoader(loader_id, null, this)
                     .forceLoad();
@@ -184,17 +184,12 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateMovieSort() {
         if (popular) {
-            initToolbar(R.string.title_popular_movies);
-            mBinding.fab.setBackgroundResource(R.drawable.ic_star_black_24dp);
+            mBinding.toolbar.setTitle(R.string.title_popular_movies);
+            mBinding.fab.setImageResource(R.drawable.ic_star_white);
         } else {
-            initToolbar(R.string.title_top_rated_movies);
-            mBinding.fab.setBackgroundResource(R.drawable.ic_whatshot_black_24dp);
+            mBinding.toolbar.setTitle(R.string.title_top_rated_movies);
+            mBinding.fab.setImageResource(R.drawable.ic_whatshot_white);
         }
-    }
-
-    private void initToolbar(int title) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(title);
     }
 
     private void handleMovies() {
@@ -208,7 +203,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onListNewsClick(Movie movie) {
-
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra(DetailsActivity.KEY_MOVIE, movie);
+        startActivity(intent);
     }
 
     @Override
@@ -244,27 +241,12 @@ public class MainActivity extends AppCompatActivity implements
         DatasetMovies newDataset = (DatasetMovies) data;
         switch (loader.getId()) {
             case LOADER_POPULAR_MOVIES_ID:
-                setTitle(R.string.title_popular_movies);
-
-                datasetMovies = newDataset;
-                break;
-
             case LOADER_TOP_RATED_MOVIES_ID:
-                setTitle(R.string.title_top_rated_movies);
-
                 datasetMovies = newDataset;
                 break;
 
             case LOADER_MORE_POPULAR_MOVIES_ID:
-                setTitle(R.string.title_popular_movies);
-
-                datasetMovies.setPage(newDataset.getPage());
-                datasetMovies.getResults().addAll(((DatasetMovies) data).getResults());
-                break;
-
             case LOADER_MORE_TOP_RATED_MOVIES_ID:
-                setTitle(R.string.title_top_rated_movies);
-
                 datasetMovies.setPage(newDataset.getPage());
                 datasetMovies.getResults().addAll(((DatasetMovies) data).getResults());
                 break;

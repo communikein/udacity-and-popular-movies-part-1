@@ -1,10 +1,14 @@
 package it.communikein.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DatasetMovies {
+public class DatasetMovies implements Parcelable {
 
     private int page;
     @SerializedName("total_results")
@@ -12,6 +16,14 @@ public class DatasetMovies {
     @SerializedName("total_pages")
     private int totalPages;
     private List<Movie> results;
+
+    public DatasetMovies(Parcel in) {
+        setPage(in.readInt());
+        setTotalResults(in.readInt());
+        setTotalPages(in.readInt());
+        setResults(new ArrayList<>());
+        in.readTypedList(results, Movie.CREATOR);
+    }
 
     public DatasetMovies(int page, int totalResults, int totalPages, List<Movie> results) {
         this.page = page;
@@ -51,4 +63,29 @@ public class DatasetMovies {
     public void setResults(List<Movie> results) {
         this.results = results;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(getPage());
+        dest.writeInt(getTotalResults());
+        dest.writeInt(getTotalPages());
+        dest.writeTypedList(getResults());
+    }
+
+    static final Parcelable.Creator<DatasetMovies> CREATOR = new Parcelable.Creator<DatasetMovies>() {
+
+        public DatasetMovies createFromParcel(Parcel in) {
+            return new DatasetMovies(in);
+        }
+
+        public DatasetMovies[] newArray(int size) {
+            return new DatasetMovies[size];
+        }
+    };
 }

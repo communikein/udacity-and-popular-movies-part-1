@@ -1,5 +1,8 @@
 package it.communikein.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;
@@ -9,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class Movie {
+public class Movie implements Parcelable {
 
     public static final SimpleDateFormat dateFormat =
             new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -27,6 +30,14 @@ public class Movie {
     @SerializedName("release_date")
     private Date releaseDate;
 
+    public Movie(Parcel in) {
+        setId(in.readInt());
+        setVoteAverage(in.readFloat());
+        setPosterPath(in.readString());
+        setOriginalTitle(in.readString());
+        setOverview(in.readString());
+        setReleaseDate(in.readString());
+    }
 
     public Movie(int id, float voteAverage, String posterPath, String originalTitle,
                  String overview, String releaseDate) {
@@ -130,4 +141,31 @@ public class Movie {
                 this.getOriginalTitle().equals(other.getOriginalTitle()) &&
                 this.getReleaseDate().getTime() == other.getReleaseDate().getTime();
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(getId());
+        dest.writeFloat(getVoteAverage());
+        dest.writeString(getPosterPath());
+        dest.writeString(getOriginalTitle());
+        dest.writeString(getOverview());
+        dest.writeString(printReleaseDate());
+    }
+
+    static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

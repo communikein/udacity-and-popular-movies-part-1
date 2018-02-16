@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import it.communikein.popularmovies.DatasetMovies;
-import it.communikein.popularmovies.Movie;
-import it.communikein.popularmovies.utilities.JsonParseUtils;
 
 public class MoviesLoader extends AsyncTaskLoader<DatasetMovies> {
 
@@ -50,8 +49,10 @@ public class MoviesLoader extends AsyncTaskLoader<DatasetMovies> {
                 return null;
 
             Bundle response = NetworkUtils.getResponseFromHttpUrl(url);
-            if (response.containsKey(NetworkUtils.KEY_DATA))
-                return JsonParseUtils.getMoviesFromJson(response.getString(NetworkUtils.KEY_DATA));
+            if (response.containsKey(NetworkUtils.KEY_DATA)) {
+                Type type = new TypeToken<DatasetMovies>(){}.getType();
+                return new Gson().fromJson(response.getString(NetworkUtils.KEY_DATA), type);
+            }
             else
                 return null;
         } catch (Exception e) {
